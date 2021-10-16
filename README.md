@@ -1,7 +1,9 @@
 # ReverseChoreography
 Repository for Reverse Choreograph (Fall 2021-Spring 2022)
 
-SETUP: 
+
+
+#AUDIO TEAM INFO: 
 
 Every time a new terminal is opened, authentication info must be
 updated to use Spotify's API. Run the following commands to do this:
