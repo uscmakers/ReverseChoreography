@@ -1,16 +1,9 @@
 # ReverseChoreography
 Repository for Reverse Choreograph (Fall 2021-Spring 2022)
 
-AUDIO TEAM INFO: 
+SETUP: 
 
-Every time a new terminal is opened, authentication info must be
-updated to use Spotify's API. Run the following commands to do this:
-
-export SPOTIPY_CLIENT_ID= '5018f42c45cd4e6b8ffa2032c91c524e'
-
-export SPOTIPY_CLIENT_SECRET= '36a70475253244899e168327c207246a'
-
-export SPOTIPY_REDIRECT_URL= 'http://localhost'
+Spotify must be open and logged in within browser
 
 RECOMMEND.PY:
 
