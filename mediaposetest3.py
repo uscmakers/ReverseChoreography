@@ -8,47 +8,29 @@ import time
 import sys
 
 song_artist_pairs = {
-    '0':('love_girl','cnblue'),
-    '1':('party_rock_anthem','lmfao'),
-    '2':('lite_spots','kaytranada'),
-    '3':('girlfriends_best_friend','walkabout'),
-    '4':('scaredy_cat','dpr_ian'),
-    '5':('girl_anachronism','the_dresden_dolls'),
-    '6':('lil_darlin','count_basie'),
-    '7':('el_invento','jose_gonzalez_calvaire'),
-    '8':('test_drive','ariana_grande'),
-    '9':('weight_in_gold','gallant'),
-    '10':('easy','wheein'),
-    '11':('comethru','jeremy_zucker'),
-    '12':('classic','mkto'),
-    '13':('tongue_tied','grouplove'),
-    '14':('motley','post_malone'),
-    '15':('knife_talk','drake'),
-    '16':('feed_the_fire','lucky_daye'),
-    '17':('lose_it','swmrs'),
-    '18':('thats_what_i_like','bruno_mars'),
-    '19':('humble','kendrick_lamar'),
-    '20':('skeletons','keshi'),
-    '21':('stairway_to_heaven','led_zeppelin'),
-    '22':('slow_dancing_in_the_dark','joji'),
-    '23':('peaches','justin_bieber'),
-    '24':('kilby_girl','backseat_lovers'),
-    '25':('jupiter_love','trey_songz'),
-    '26':('woman','doja_cat'),
-    '27':('get_up','ciara'),
-    '28':('throwin_elbows','excision'),
-    '29':('power','little mix'),
-    '30':('ymca','village_people'),
-    '31':('all_i_wanna_do','jay_park'),
-    '32':('easily','bruno_major'),
-    '33':('feed_the_fire','lucky_daye'),
-    '34':('fool_around','yas'),
-    '35':('good_4_u','olivia_rodrigo'),
-    '36':('knife_talk','drake'),
-    '37':('levitating','dua_lipa'),
-    '38':('sad_girlz_luv_money','amaarae'),
-    '39':('tik_tok','kesha'),
-    '40':('a_thousand_miles','vanessa_carlton')
+    '1':('thats_what_i_like','bruno_mars'),
+    '2':('humble','kendrick_lamar'),
+    '3':('skeletons','keshi'),
+    '4':('slow_dancing_in_the_dark','joji'),
+    '5':('lite_spots','kaytranada'),
+    '6':('woman','doja_cat'),
+    '7':('get_up','ciara'),
+    '8':('throwin_elbows','excision'),
+    '9':('power','little mix'),
+    '10':('peaches','justin_bieber'),
+    '11':('knife_talk','drake'),
+    '12':('fool_around','yas'),
+    '13':('levitating','dua_lipa'),
+    '14':('feed_the_fire','lucky_daye'),
+    '15':('easily','bruno_major'),
+    '16':('good_4_u','olivia_rodrigo'),
+    '17':('all_i_wanna_do','jay_park'),
+    '18':('sad_girlz_luv_money','amaarae'),
+    '19':('tik_tok','kesha'),
+    '20':('ymca','village_people'),
+    '21':('intuition_interlude','jamie_foxx'),
+    '22':('kilby_girl','the_backseat_lovers'),
+    '23':('a_thousand_miles','vanessa_carlton')
 }
 
 # run as 'python3 mediaposetest3.py [dancer_id] [song_artist_id]' e.g. 'python3 mediaposetest3.py 1 1'
@@ -156,7 +138,7 @@ def main():
             vid_writer.write(image)
             #plt.imshow((image*255).astype(np.uint8))
             #plt.savefig("image-frame/" + str(count) + ".jpg")
-            if (cv2.waitKey(5) & 0xFF == 27) or (start_time-end_time >= 20):
+            if (cv2.waitKey(5) & 0xFF == 27) or (end_time-start_time >= 23):
                 df = pd.DataFrame(alldata)
                 run_name = f'data/{dancer_id}_{song_artist_pairs[song_artist_id][0]}_{song_artist_pairs[song_artist_id][1]}.csv'
                 df.to_csv(run_name)
