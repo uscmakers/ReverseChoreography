@@ -25,6 +25,34 @@ client_credentials_manager = SpotifyClientCredentials(client_id = CLIENT_ID, cli
 oAuth = SpotifyOAuth(client_id = CLIENT_ID, client_secret = CLIENT_SECRET, redirect_uri = REDIRECT_URL, scope = 'user-modify-playback-state')
 sp = spotipy.Spotify(auth_manager =oAuth)
 
+song_artist_pairs = {
+    '1':('thats_what_i_like','bruno_mars'),
+    '2':('humble','kendrick_lamar'),
+    '3':('skeletons','keshi'),
+    '4':('slow_dancing_in_the_dark','joji'),
+    '5':('lite_spots','kaytranada'),
+    '6':('woman','doja_cat'),
+    '7':('get_up','ciara'),
+    '8':('throwin_elbows','excision'),
+    '9':('power','little mix'),
+    '10':('peaches','justin_bieber'),
+    '11':('knife_talk','drake'),
+    '12':('fool_around','yas'),
+    '13':('levitating','dua_lipa'),
+    '14':('feed_the_fire','lucky_daye'),
+    '15':('easily','bruno_major'),
+    '16':('good_4_u','olivia_rodrigo'),
+    '17':('all_i_wanna_do','jay_park'),
+    '18':('sad_girlz_luv_money','amaarae'),
+    '19':('tik_tok','kesha'),
+    '20':('ymca','village_people'),
+    '21':('intuition_interlude','jamie_foxx'),
+    '22':('kilby_girl','the_backseat_lovers'),
+    '23':('a_thousand_miles','vanessa_carlton'),
+    '24':('jupiter_love', 'trey_songz'),
+    '25':('kilby_girl', 'backseat_lovers')
+}
+
 def get_args():
     parser = argparse.ArgumentParser(description='Recommendations for the given song')
     parser.add_argument('-s', '--song', required=True, help='Name of Song')
@@ -203,6 +231,7 @@ def show_feature_based_recommendations_for_song(audio_features):
 def generate_classification_prediction(data):
     features = data.to_numpy()
     
+    
     filename = 'classification_model.sav'
     model = pickle.load(open(filename, 'rb'))
     
@@ -230,7 +259,7 @@ def main():
     show_feature_based_recommendations_for_song(features)
     
     print("Recommendations from training set songs:")
-    predicted_song_number = generate_classification_preduction(features)
+    predicted_song_number = generate_classification_prediction(extracted_features)
 
 if __name__ == '__main__':
     main()
