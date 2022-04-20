@@ -143,6 +143,7 @@ def main():
             count = count + 1
             print(count)
             fps_time = time.time()
+            image = np.uint8(image)
             vid_writer.write(image)
             #plt.imshow((image*255).astype(np.uint8))
             #plt.savefig("image-frame/" + str(count) + ".jpg")

@@ -231,11 +231,7 @@ def main():
     show_feature_based_recommendations_for_song(features)
     
     print("Recommendations from training set songs:")
-<<<<<<< HEAD
-    predicted_song_number = generate_classification_preduction(features)
-=======
     predicted_song_number = generate_classification_prediction(extracted_features)
->>>>>>> 8500c86c4037d98a5d1e69c75b83a6d99b20d130
 
 if __name__ == '__main__':
     main()
