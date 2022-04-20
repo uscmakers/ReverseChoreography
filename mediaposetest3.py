@@ -33,11 +33,19 @@ song_artist_pairs = {
     '23':('a_thousand_miles','vanessa_carlton')
 }
 
-# run as 'python3 mediaposetest3.py [dancer_id] [song_artist_id]' e.g. 'python3 mediaposetest3.py 1 1'
+# for generating data, run as 'python3 mediaposetest3.py [dancer_id] [song_artist_id]' e.g. 'python3 mediaposetest3.py 1 1'
+# for tests, run as 'python3 mediaposetest3.py [testName]' e.g. 'python3 mediaposetest3.py jeff'
 def main():
     args = sys.argv[1:]
-    dancer_id = args[0]
-    song_artist_id = args[1]
+
+    filename = ""
+    if len(args) == 2:
+        dancer_id = args[0]
+        song_artist_id = args[1]
+        run_name = f'data/{dancer_id}_{song_artist_pairs[song_artist_id][0]}_{song_artist_pairs[song_artist_id][1]}.csv'
+    elif len(args) == 1:
+        testName = args[0]
+        run_name = f'data/{testName}_test.csv'
 
     mp_drawing = mp.solutions.drawing_utils
     mp_holistic = mp.solutions.holistic
@@ -135,15 +143,16 @@ def main():
             count = count + 1
             print(count)
             fps_time = time.time()
+            image = np.uint8(image)
             vid_writer.write(image)
             #plt.imshow((image*255).astype(np.uint8))
             #plt.savefig("image-frame/" + str(count) + ".jpg")
             if (cv2.waitKey(5) & 0xFF == 27) or (end_time-start_time >= 23):
                 df = pd.DataFrame(alldata)
-                run_name = f'data/{dancer_id}_{song_artist_pairs[song_artist_id][0]}_{song_artist_pairs[song_artist_id][1]}.csv'
                 df.to_csv(run_name)
                 break
     cap.release()
+    vid_writer.release()
 
 if __name__ == "__main__":
     main()
