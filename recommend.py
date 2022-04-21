@@ -190,12 +190,13 @@ def show_feature_based_recommendations_for_song(audio_features):
           "min_valence":float(audio_features[7])-.1,
           "target_valence":audio_features[7],
           "max_valence":float(audio_features[7])+.1,
-          "min_tempo":float(audio_features[8])-20,
+          "min_tempo":float(audio_features[8])-15,
           "target_tempo":audio_features[8],
-          "max_tempo":float(audio_features[8])+20
+          "max_tempo":float(audio_features[8])+15
           }
     results = sp.recommendations(seed_artists=None, seed_genres=['alternative', 'r-n-b', 'rap', 'edm', 'pop'], seed_tracks=None, limit=10, country=None, **kwargs)
     print("Feature-based Recommendations:")
+    #TODO handle no results? Lessen restrictions in kwargs
     for track in results['tracks']:
         print("TRACK: ",track['name'], " - ",track['artists'][0]['name'])
         sp.add_to_queue(track['uri'])
@@ -218,20 +219,26 @@ def generate_classification_prediction(data):
 def main():
     tempo = input("Input tempo: ")
     
-    filename = 'model.sav'
+    filename = 'model_final.sav'
     model = pickle.load(open(filename, 'rb'))
 
-    [x_data, y_data] = preprocess("data/test_data_jeff.csv")
+    [x_data, y_data] = preprocess("data/13_tik_tok_kesha.csv")
     extracted_features = parse(x_data, y_data)
+    extracted_features_classifier = extracted_features
+    selected_features = pd.read_csv("Selected_Feature_List.csv")["0"].to_numpy()
+    extracted_features = extracted_features[selected_features]
 
     predicted_audio_features = model.predict(extracted_features)
+
     features = np.append(predicted_audio_features[0][0:len(predicted_audio_features[0])-1], tempo)
     
     print("Recommendations from all songs:")
     show_feature_based_recommendations_for_song(features)
-    
+    #TODO generate_classification_prediction gives an error when called
     print("Recommendations from training set songs:")
-    predicted_song_number = generate_classification_prediction(extracted_features)
+    predicted_song_number = generate_classification_prediction(extracted_features_classifier)
+    
+
 
 if __name__ == '__main__':
     main()
