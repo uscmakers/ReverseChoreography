@@ -264,8 +264,10 @@ def main():
     filename = 'model_final.sav'
     model = pickle.load(open(filename, 'rb'))
 
-    [x_data, y_data] = preprocess("data/13_tik_tok_kesha.csv")
+    [x_data, y_data] = preprocess(run_filename)
     extracted_features = parse(x_data, y_data)
+    classification_extracted_features = extracted_features
+
     extracted_features_classifier = extracted_features
     selected_features = pd.read_csv("Selected_Feature_List.csv")["0"].to_numpy()
     extracted_features = extracted_features[selected_features]
@@ -278,9 +280,9 @@ def main():
     regression_recs = show_feature_based_recommendations_for_song(features)
     
     print("Recommendations from training set songs:")
-    classification_recs = predicted_song_number = generate_classification_prediction(extracted_features)
+    classification_recs = generate_classification_prediction(classification_extracted_features)
     
-    create_playlist(filename, regression_recs, classification_recs)
+    create_playlist(run_filename, regression_recs, classification_recs)
 
 if __name__ == '__main__':
     main()
