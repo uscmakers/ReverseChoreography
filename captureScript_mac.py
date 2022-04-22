@@ -38,7 +38,7 @@ song_artist_pairs = {
 def main():
     args = sys.argv[1:]
 
-    filename = ""
+    run_name = ""
     if len(args) == 2:
         dancer_id = args[0]
         song_artist_id = args[1]
