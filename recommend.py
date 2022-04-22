@@ -22,8 +22,36 @@ CLIENT_ID="9793440f0a5047c59c70bcfcf91ad589"
 CLIENT_SECRET= "b66dc3a5f9f34207bebee32a25745368"
 REDIRECT_URL="http://localhost/"
 client_credentials_manager = SpotifyClientCredentials(client_id = CLIENT_ID, client_secret = CLIENT_SECRET)
-oAuth = SpotifyOAuth(client_id = CLIENT_ID, client_secret = CLIENT_SECRET, redirect_uri = REDIRECT_URL, scope = 'user-modify-playback-state')
+oAuth = SpotifyOAuth(client_id = CLIENT_ID, client_secret = CLIENT_SECRET, redirect_uri = REDIRECT_URL, scope = 'user-modify-playback-state,playlist-modify-public')
 sp = spotipy.Spotify(auth_manager =oAuth)
+
+song_artist_pairs = {
+    '1':('thats_what_i_like','bruno_mars'),
+    '2':('humble','kendrick_lamar'),
+    '3':('skeletons','keshi'),
+    '4':('slow_dancing_in_the_dark','joji'),
+    '5':('lite_spots','kaytranada'),
+    '6':('woman','doja_cat'),
+    '7':('get_up','ciara'),
+    '8':('throwin_elbows','excision'),
+    '9':('power','little mix'),
+    '10':('peaches','justin_bieber'),
+    '11':('knife_talk','drake'),
+    '12':('fool_around','yas'),
+    '13':('levitating','dua_lipa'),
+    '14':('feed_the_fire','lucky_daye'),
+    '15':('easily','bruno_major'),
+    '16':('good_4_u','olivia_rodrigo'),
+    '17':('all_i_wanna_do','jay_park'),
+    '18':('sad_girlz_luv_money','amaarae'),
+    '19':('tik_tok','kesha'),
+    '20':('ymca','village_people'),
+    '21':('intuition_interlude','jamie_foxx'),
+    '22':('kilby_girl','the_backseat_lovers'),
+    '23':('a_thousand_miles','vanessa_carlton'),
+    '24':('jupiter_love', 'trey_songz'),
+    '25':('kilby_girl', 'backseat_lovers')
+}
 
 def get_args():
     parser = argparse.ArgumentParser(description='Recommendations for the given song')
@@ -45,6 +73,7 @@ def show_recommendations_for_song(song):
     for track in results['tracks']:
         print("TRACK: ",track['name'], " - ",track['artists'][0]['name'])
         sp.add_to_queue(track['uri'])
+    return [track['uri'] for track in results['tracks']]
 
 def show_feature_based_recommendations_for_song(song):
     song_features = sp.audio_features([song['uri']])
@@ -54,6 +83,7 @@ def show_feature_based_recommendations_for_song(song):
     for track in results['tracks']:
         print("TRACK: ",track['name'], " - ",track['artists'][0]['name'])
         sp.add_to_queue(track['uri'])
+    return [track['uri'] for track in results['tracks']]
 
 def get_audio_features(song_name, artist_name):
     song = get_song(song_name, artist_name)
@@ -199,6 +229,7 @@ def show_feature_based_recommendations_for_song(audio_features):
     for track in results['tracks']:
         print("TRACK: ",track['name'], " - ",track['artists'][0]['name'])
         sp.add_to_queue(track['uri'])
+    return [track['uri'] for track in results['tracks']] 
 
 def generate_classification_prediction(data):
     features = data.to_numpy()
@@ -212,26 +243,40 @@ def generate_classification_prediction(data):
     song = get_song(artist_song[0], artist_song[1])
 
     print('\n\nClassification Results')
-    show_recommendations_for_song(song)
-    return 
+    
+    return show_recommendations_for_song(song)
+
+def create_playlist(filename, regression_songs, classification_songs):
+    myId = sp.current_user()['id']
+    playlistInfo = sp.user_playlist_create(myId, filename, True, False, 'rev choreo recs for filename')
+    playlistId = playlistInfo['id']
+    url = playlistInfo['external_urls']['spotify']
+    
+    sp.user_playlist_add_tracks(myId, playlistId, regression_songs)
+    sp.user_playlist_add_tracks(myId, playlistId, classification_songs)
+    print('Find YOUR playlist at: ', url)
+    return
 
 def main():
     tempo = input("Input tempo: ")
+    run_filename = "data/10_ymca_village_people.csv"
     
     filename = 'model.sav'
     model = pickle.load(open(filename, 'rb'))
 
-    [x_data, y_data] = preprocess("data/test_data_jeff.csv")
+    [x_data, y_data] = preprocess(run_filename)
     extracted_features = parse(x_data, y_data)
 
     predicted_audio_features = model.predict(extracted_features)
     features = np.append(predicted_audio_features[0][0:len(predicted_audio_features[0])-1], tempo)
     
     print("Recommendations from all songs:")
-    show_feature_based_recommendations_for_song(features)
+    regression_recs = show_feature_based_recommendations_for_song(features)
     
     print("Recommendations from training set songs:")
-    predicted_song_number = generate_classification_prediction(extracted_features)
+    classification_recs = predicted_song_number = generate_classification_prediction(extracted_features)
+    
+    create_playlist(filename, regression_recs, classification_recs)
 
 if __name__ == '__main__':
     main()
