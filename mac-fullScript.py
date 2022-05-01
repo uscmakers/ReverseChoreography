@@ -267,7 +267,7 @@ def create_playlist(filename, regression_songs, classification_songs):
 def videoCap():
     args = sys.argv[1:]
 
-    run_name = ""
+    run_name = "data/dummy.csv"
     if len(args) == 2:
         dancer_id = args[0]
         song_artist_id = args[1]
@@ -295,7 +295,7 @@ def videoCap():
                 'MIDDLE_FINGER_PIP2', 'MIDDLE_FINGER_DIP2', 'MIDDLE_FINGER_TIP2', 'RING_FINGER_PIP2', 'RING_FINGER_DIP2', 'RING_FINGER_TIP2',
                 'RING_FINGER_MCP2', 'PINKY_MCP2', 'PINKY_PIP2', 'PINKY_DIP2', 'PINKY_TIP2']
 
-    cap = cv2.VideoCapture(1)
+    cap = cv2.VideoCapture(0)
     suc,frame_video = cap.read()
     vid_writer = cv2.VideoWriter('pose.avi', cv2.VideoWriter_fourcc('M','J','P','G'), 10, (frame_video.shape[1], frame_video.shape[0]))
     with mp_holistic.Holistic(
@@ -320,7 +320,7 @@ def videoCap():
             # Draw landmark annotation on the image.
             image.flags.writeable = False
             image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
-            image_asli = np.copy(image)
+            raw_video_feed = np.copy(image)
             image = np.zeros(image.shape)
             mp_drawing.draw_landmarks(
                 image, results.left_hand_landmarks, mp_holistic.HAND_CONNECTIONS)
@@ -364,11 +364,11 @@ def videoCap():
                 )
                 alldata.append(data_tubuh)
 
-            cv2.namedWindow('MediaPipe Holistic', cv2.WND_PROP_FULLSCREEN)
-            cv2.setWindowProperty('MediaPipe Holistic', cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
+            cv2.namedWindow('MediaPipe Holistic', cv2.WINDOW_AUTOSIZE)
+            cv2.setWindowProperty('MediaPipe Holistic', cv2.WND_PROP_AUTOSIZE, cv2.WINDOW_AUTOSIZE)
             cv2.putText(image, "FPS: %f" % (1.0 / (time.time() - fps_time)), (10, 10),cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2,)
-            cv2.imshow('MediaPipe Holistic', image) #sudah menampilkan backgrounnd hitam dan skeleton
-            cv2.imshow('Gambar asli', image_asli)
+            cv2.imshow('MediaPipe Holistic', image)
+            # cv2.imshow('Video Feed', raw_video_feed)
             count = count + 1
             print(count)
             fps_time = time.time()
@@ -388,16 +388,17 @@ def recommend(run_name):
     tempo = input("Input tempo: ")
     run_filename = run_name
 
-    filename = 'model_final.sav'
+    filename = 'model.sav'
     model = pickle.load(open(filename, 'rb'))
 
     [x_data, y_data] = preprocess(run_filename)
     extracted_features = parse(x_data, y_data)
     classification_extracted_features = extracted_features
 
-    extracted_features_classifier = extracted_features
-    selected_features = pd.read_csv("Selected_Feature_List.csv")["0"].to_numpy()
-    extracted_features = extracted_features[selected_features]
+# For simple decision tree model, disregard the feature selection performed below
+# To use the feature selection performed below, first either re-train or download the regressor model and substitute it in
+    # selected_features = pd.read_csv("Selected_Feature_List.csv")["0"].to_numpy()
+    # extracted_features = extracted_features[selected_features]
 
     predicted_audio_features = model.predict(extracted_features)
 
