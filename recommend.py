@@ -234,27 +234,24 @@ def show_feature_based_recommendations_for_song(audio_features):
 def generate_classification_prediction(data):
     features = data.to_numpy()
     
-    
     filename = 'classification_model.sav'
     model = pickle.load(open(filename, 'rb'))
     
     prediction = model.predict(features)
     artist_song = song_artist_pairs[prediction[0]]
     song = get_song(artist_song[0], artist_song[1])
-
-    print('\n\nClassification Results')
     
     return show_recommendations_for_song(song)
 
 def create_playlist(filename, regression_songs, classification_songs):
     myId = sp.current_user()['id']
-    playlistInfo = sp.user_playlist_create(myId, filename, True, False, 'rev choreo recs for filename')
+    playlistInfo = sp.user_playlist_create(myId, filename, True, False, 'rev choreo recs')
     playlistId = playlistInfo['id']
     url = playlistInfo['external_urls']['spotify']
     
     sp.user_playlist_add_tracks(myId, playlistId, regression_songs)
     sp.user_playlist_add_tracks(myId, playlistId, classification_songs)
-    print('Find YOUR playlist at: ', url)
+    print('\nFind YOUR playlist at: ', url)
     return
 
 def main():
@@ -276,12 +273,13 @@ def main():
 
     features = np.append(predicted_audio_features[0][0:len(predicted_audio_features[0])-1], tempo)
     
-    print("Recommendations from all songs:")
+    print("Recommendations from regression model:")
     regression_recs = show_feature_based_recommendations_for_song(features)
     
-    print("Recommendations from training set songs:")
+    print("\n\nRecommendations from classification model:")
     classification_recs = generate_classification_prediction(classification_extracted_features)
     
+    run_filename = run_filename[5:-4]
     create_playlist(run_filename, regression_recs, classification_recs)
 
 if __name__ == '__main__':

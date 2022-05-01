@@ -66,7 +66,9 @@ def main():
                 'MIDDLE_FINGER_PIP2', 'MIDDLE_FINGER_DIP2', 'MIDDLE_FINGER_TIP2', 'RING_FINGER_PIP2', 'RING_FINGER_DIP2', 'RING_FINGER_TIP2',
                 'RING_FINGER_MCP2', 'PINKY_MCP2', 'PINKY_PIP2', 'PINKY_DIP2', 'PINKY_TIP2']
 
-    cap = cv2.VideoCapture(0)
+    # Use 0 for installed camera, use 1 for attached  webcam
+    cameraNum = 0
+    cap = cv2.VideoCapture(cameraNum)
     suc,frame_video = cap.read()
     vid_writer = cv2.VideoWriter('pose.avi', cv2.VideoWriter_fourcc('M','J','P','G'), 10, (frame_video.shape[1], frame_video.shape[0]))
     with mp_holistic.Holistic(
